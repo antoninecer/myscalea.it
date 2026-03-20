@@ -1,0 +1,63 @@
+CONTRATTO QUADRO DI COLLABORAZIONE
+concluso tra:
+
+**Organizzatore della collaborazione:**
+Progetto myscalea.it
+rappresentato da Antonín Ečer
+(di seguito denominato “Segnalatore”)
+
+**e**
+
+**Agenzia Immobiliare:**
+{{agency_name}}
+sede: {{agency_address}}, {{agency_city}}, {{agency_zip}}, {{agency_country}}
+rappresentata da: Responsabile Agenzia
+(di seguito denominata “Agenzia”)
+
+---
+
+**Articolo I – Oggetto del contratto**
+Il Segnalatore si impegna a fornire all’Agenzia un elenco di clienti che, attraverso il progetto myscalea.it:
+- sono stati previamente contattati e consultati in merito alle loro esigenze, preferenze e possibilità finanziarie;
+- sono stati informati in modo realistico sul mercato immobiliare nella zona di Scalea (prezzi effettivi, ubicazione, stato tecnico degli immobili);
+- e hanno ricevuto offerte immobiliari selezionate dall’Agenzia, in linea con i parametri concordati.
+
+L’elenco dei clienti è gestito tramite un sistema protetto all’interno del portale myscalea.it, dove sono registrate le esigenze espresse e le proposte inviate.
+
+L’Agenzia si impegna ad accettare e servire questi clienti in modo professionale.
+
+**Articolo II – Compenso per la segnalazione**
+Per ogni cliente che, in seguito alla segnalazione tramite il portale myscalea.it, concluda un contratto di compravendita, spetta al Segnalatore un compenso pari a:
+- 3% del prezzo di vendita dell’immobile – se al cliente è stata fornita almeno una delle seguenti assistenze (ad esempio sopralluogo, video, descrizione tecnica, supporto logistico, alloggio ecc.);
+- 2% del prezzo di vendita dell’immobile – se il cliente è stato segnalato già preparato, senza ulteriori servizi.
+
+Il pagamento della provvigione avverrà entro **30 giorni solari** dal ricevimento da parte dell’Agenzia della somma complessiva derivante dalla vendita.
+
+**Articolo III – Tutela dei clienti segnalati**
+I clienti segnalati tramite myscalea.it saranno registrati dall’Agenzia. Qualora il cliente finalizzi l’acquisto anche senza il coinvolgimento diretto del Segnalatore, ma in seguito a un precedente contatto tramite myscalea.it, la provvigione concordata sarà comunque dovuta.
+
+La validità della segnalazione è di 12 mesi dalla comunicazione del nominativo.
+
+**Articolo IV – Durata del contratto**
+Il presente contratto è a tempo indeterminato e può essere risolto da ciascuna parte mediante comunicazione scritta con un preavviso di 30 giorni.
+
+**Articolo V – Disposizioni finali**
+Ogni modifica o integrazione del presente contratto dovrà essere effettuata per iscritto e approvata da entrambe le parti.
+
+Il presente contratto è redatto in due copie originali, una per ciascuna parte.
+
+**Per il progetto myscalea.it:**
+{{SIGNATURE_PLACE}}
+__________________________
+Antonín Ečer
+Data: {{CREATED}}
+
+**Per l’Agenzia Immobiliare {{agency_name}}**
+
+
+
+
+__________________________
+{{representative_name}}
+Data: _____________
+

@@ -1,0 +1,9 @@
+{
+    "require": {
+        "phpmailer/phpmailer": "^6.9",
+        "piwik/device-detector": "^6.4",
+        "geoip2/geoip2": "^2.13",
+        "endroid/qr-code": "^6.0",
+        "chillerlan/php-qrcode": "^5.0"
+    }
+}

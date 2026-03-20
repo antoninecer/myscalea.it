@@ -1,0 +1,170 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once('../inc/connect.php');
+
+$sql = "SELECT id, name, description, category_id, latitude, longitude, website, opening_hours, phone, email, address FROM places";
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$places = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$sql = "SELECT c.id, c.name FROM categories c
+        JOIN places p ON p.category_id = c.id
+        GROUP BY c.id, c.name
+        ORDER BY c.name";
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyScalea Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="map.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://kit.fontawesome.com/a53c6e5e24.js" crossorigin="anonymous"></script>
+  <style>
+    body.modal-open { overflow: hidden; }
+    #burger {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+    #sideMenu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100%;
+      background: #fff;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+      padding: 20px;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      overflow-y: auto;
+      transform: translateX(-100%);
+    }
+    #sideMenu.open { transform: translateX(0); }
+    #sideMenu h3 { margin-top: 0; }
+    #weather-toggle {
+      font-size: 14px;
+      margin-top: 10px;
+      display: block;
+    }
+    #map { position: absolute; top: 0; bottom: 0; right: 0; left: 0; }
+  </style>
+</head>
+<body>
+<div id="burger"><i class="fas fa-bars"></i></div>
+<div id="sideMenu">
+  <h3>MyScalea</h3>
+  <a href="/">🏠 Back to Main Page</a>
+  <hr>
+  <input type="text" id="searchInput" placeholder="Search places..." style="width: 100%; padding: 5px; margin: 10px 0;">
+  <hr>
+  <strong>📂 Categories:</strong><br>
+  <?php foreach ($categories as $cat): ?>
+    <label>
+      <input type="checkbox" class="category-toggle" value="<?= $cat['id'] ?>" checked>
+      <?= ucfirst($cat['name']) ?>
+    </label><br>
+  <?php endforeach; ?>
+  <hr>
+  <label><input type="checkbox" id="onlyOpenToggle"> Show only currently open</label><br>
+  <label id="weather-toggle">
+    <input type="checkbox" id="showWeatherCheckbox"> Show Weather
+  </label>
+</div>
+<div id="weather">
+  <i class="fas fa-cloud-sun"></i>
+  <div id="weather-info">Načítání počasí...</div>
+</div>
+<div id="map"></div>
+<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') include 'modal_edit_place.php'; ?>
+<script>
+const isAdmin = <?= isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin' ? 'true' : 'false' ?>;
+
+function isOpenNow(opening_hours) {
+  if (!opening_hours) return true;
+  try {
+    const now = new Date();
+    const day = now.toLocaleDateString('en-US', { weekday: 'long' });
+    const prevDay = new Date(now);
+    prevDay.setDate(now.getDate() - 1);
+    const prevDayName = prevDay.toLocaleDateString('en-US', { weekday: 'long' });
+    const parsed = JSON.parse(opening_hours);
+    const nowTime = now.getHours() + now.getMinutes() / 60;
+    const todayHours = Array.isArray(parsed[day]) ? parsed[day] : (parsed[day] ? [parsed[day]] : []);
+    for (const p of todayHours) {
+      const fromTime = parseFloat(p.from.split(':')[0]) + parseFloat(p.from.split(':')[1]) / 60;
+      const toTime = parseFloat(p.to.split(':')[0]) + parseFloat(p.to.split(':')[1]) / 60;
+      if (fromTime <= toTime) {
+        if (nowTime >= fromTime && nowTime <= toTime) return true;
+      } else {
+        if (nowTime >= fromTime || nowTime <= toTime) return true;
+      }
+    }
+    const ydayHours = Array.isArray(parsed[prevDayName]) ? parsed[prevDayName] : (parsed[prevDayName] ? [parsed[prevDayName]] : []);
+    for (const p of ydayHours) {
+      const fromTime = parseFloat(p.from.split(':')[0]) + parseFloat(p.from.split(':')[1]) / 60;
+      const toTime = parseFloat(p.to.split(':')[0]) + parseFloat(p.to.split(':')[1]) / 60;
+      if (fromTime > toTime && nowTime <= toTime) return true;
+    }
+    return false;
+  } catch (e) {
+    return true;
+  }
+}
+
+function renderMarkers(filteredPlaces = null) {
+  const mapInstance = L.map('map').setView([39.8133, 15.7984], 14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
+  const markers = [];
+  const selectedCategories = Array.from(document.querySelectorAll('.category-toggle:checked')).map(el => parseInt(el.value));
+  const onlyOpen = document.getElementById('onlyOpenToggle').checked;
+  const placesToRender = filteredPlaces || <?= json_encode($places); ?>;
+
+  placesToRender.forEach(place => {
+    if (!selectedCategories.includes(place.category_id)) return;
+    const isOpen = isOpenNow(place.opening_hours);
+    if (onlyOpen && !isOpen) return;
+
+    const iconClass = {
+      1: 'fa-utensils', 2: 'fa-train-subway', 3: 'fa-camera', 4: 'fa-umbrella-beach',
+      5: 'fa-hotel', 6: 'fa-store', 7: 'fa-star', 8: 'fa-bus', 9: 'fa-anchor', 10: 'fa-plane'
+    }[place.category_id] || 'fa-map-marker-alt';
+
+    const statusLabel = isOpen ? '🟢 Open' : '🔴 Closed';
+    const customIcon = L.divIcon({ html: `<i class="fas ${iconClass}"></i>`, iconSize: [30, 30] });
+
+    const popupContent = `
+      <b>${place.name}</b><br>
+      ${statusLabel}<br>
+      ${place.description || ''}<br>
+      ${place.website ? `<a href="${place.website}" target="_blank">🌐 Website</a><br>` : ''}
+      <a href="https://www.google.com/maps/dir/?api=1&destination=${place.latitude},${place.longitude}" target="_blank">🧭 Navigate</a>`;
+
+    const marker = L.marker([place.latitude, place.longitude], { icon: customIcon })
+      .addTo(mapInstance)
+      .bindPopup(popupContent)
+      .bindTooltip(`${place.name} ${isOpen ? '🟢' : '🔴'}`, { direction: 'top', offset: [0, -10], opacity: 0.9 });
+
+    markers.push(marker);
+  });
+}
+
+renderMarkers();
+</script>
+</body>
+</html>
+

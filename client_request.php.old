@@ -1,0 +1,82 @@
+<!-- Jednoduchý formulář pro klienty s automatickým výpočtem rozpočtu -->
+<form id="clientForm" method="POST" action="client_request_submit.php" style="max-width:400px;margin:auto;font-family:sans-serif">
+  <h3>Realitní přání</h3>
+
+  <label>Jméno:</label>
+  <input type="text" name="name" required><br><br>
+
+  <label>Email:</label>
+  <input type="email" name="email" required><br><br>
+
+  <label>Heslo:</label>
+<input type="password" name="password" required><br><br>
+
+  <label>Telefon:</label>
+  <input type="text" name="phone"><br><br>
+
+  <label>Počet pokojů:</label>
+  <select id="rooms">
+    <option value="1+">1+</option>
+    <option value="2+" selected>2+</option>
+    <option value="3+">3+</option>
+    <option value="4+">4+</option>
+  </select><br><br>
+
+  <label>Rozloha (m²):</label>
+  <input type="number" id="area" min="10" max="300" required><br><br>
+
+  <label>Lokalita:</label>
+  <select id="location">
+    <option value="centrum">Centrum</option>
+    <option value="okraj">Okraj</option>
+    <option value="u more">U moře</option>
+  </select><br><br>
+
+  <label>Rozpočet (vygenerováno):</label>
+  <input type="text" id="budget" readonly style="background:#eee;"><br><br>
+
+  <input type="hidden" name="requirements" id="requirements">
+  <button type="submit">Odeslat přání</button>
+</form>
+
+<script>
+const areaInput = document.getElementById('area');
+const budgetInput = document.getElementById('budget');
+const requirementsField = document.getElementById('requirements');
+const form = document.getElementById('clientForm');
+
+function updateBudget() {
+  const area = parseFloat(areaInput.value);
+  const pricePerM2 = 1250; // nastavena orientační cena za m²
+
+  if (!isNaN(area)) {
+    const budget = Math.round(area * pricePerM2);
+    budgetInput.value = `${budget} EUR`;
+  } else {
+    budgetInput.value = '';
+  }
+}
+
+areaInput.addEventListener('input', updateBudget);
+form.addEventListener('submit', function(e) {
+  const rooms = document.getElementById('rooms').value;
+  const area = parseFloat(areaInput.value);
+  const location = document.getElementById('location').value;
+  const budget = parseInt(budgetInput.value);
+  let note = "";
+
+  if (area && budget < area * 1000) {
+    note = "low budget";
+  }
+
+  const req = {
+    rooms,
+    area,
+    location,
+    budget,
+    note
+  };
+
+  requirementsField.value = JSON.stringify(req);
+});
+</script>

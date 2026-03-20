@@ -1,0 +1,9 @@
+{
+  "name": "antonin/qr-clean",
+  "require": {
+    "endroid/qr-code": "6.0.8"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
+

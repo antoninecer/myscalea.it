@@ -1,0 +1,152 @@
+.opening-hours {
+  margin-top: 5px;
+  font-family: monospace;
+  white-space: pre;
+  line-height: 1.4;
+}
+
+.opening-hours .today {
+  font-weight: bold;
+  color: #007bff;
+}
+
+
+/* Reset těla */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* Hlavní mapa */
+#map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+/* Hamburger menu */
+#burger {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    z-index: 1001;
+    cursor: pointer;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+/* Levé menu */
+#controls {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    background: rgba(255,255,255,0.95);
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 1000;
+    max-height: 70vh;
+    overflow-y: auto;
+    font-size: 14px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* Weather info */
+#weather {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255,255,255,0.9);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#weather i {
+    margin-right: 8px;
+}
+
+/* Zoom vlevo dole */
+.leaflet-control-zoom {
+    left: 10px !important;
+    bottom: 10px !important;
+    top: auto !important;
+    right: auto !important;
+}
+
+/* Ikonky markeru */
+.fa-marker {
+    font-size: 20px;
+    background: white;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+/* Responsivita */
+@media (max-width: 768px) {
+    #burger {
+        font-size: 20px;
+        padding: 5px 8px;
+    }
+
+    #controls {
+        width: 90vw;
+        left: 5vw;
+        top: 60px;
+    }
+
+    #weather {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .reserve-btn {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 4px 8px;
+        background: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+      .reserve-btn:hover {
+        background: #0056b3;
+      }
+      
+}
+
+.search-hint {
+    font-style: italic;
+    color: #666;
+    font-size: 0.5em;
+    margin: 2px 0 5px;
+  }
+
+  iframe.goog-te-banner-frame.skiptranslate {
+    visibility: visible !important;
+    opacity: 1 !important;
+    /* zmenšíme obsah banneru (šokový scale) */
+    transform: scale(0.2) !important;
+    transform-origin: top right !important;
+
+    /* překreslíme ho nad mapu, v rohu */
+    position: fixed !important;
+    top: 10px !important;
+    right: 60px !important;
+    width: 300px !important;   /* nutné, aby si iframe zachoval poměr */
+    height: 100px !important;
+    z-index: 2002 !important;
+}
+  
+

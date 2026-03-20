@@ -1,0 +1,137 @@
+Níže je shrnutí celého řešení krok za krokem, přesně tak, jak jsme ho navrhli a implementovali.
+
+1. Definice sezón (season_type)
+Vytvořili jsme tabulku season_type se čtyřmi základními kategoriemi:
+
+season_code	season_name	Popis
+OS	Off-Season	mimosezóna (ostatní dny, mimo vymezená období)
+SS	Shoulder Season	vedlejší sezóna (16. 5.–31. 5. a 1. 9.–15. 9.)
+HS	High Season	hlavní sezóna (1. 7.–31. 8.)
+HOL	Holidays	sváteční období (statické i pohyblivé svátky)
+
+2. Mapa roku (season_calendar_template)
+Založili jsme tabulku season_calendar_template o 365 řádcích, kde pro každý den bez ohledu na rok:
+
+date_code = měsíc-den (např. 04-25)
+
+description = název svátku (statických státních svátků, např. „Liberation Day“)
+
+season_code = kód sezóny podle season_type (OS/SS/HS)
+
+Díky tomu máme pro každý den roku výchozí sezónu a popis svátku.
+
+3. Pohyblivé svátky (movable_holidays)
+Pro období 2025–2049 jsme vytvořili tabulku movable_holidays, která obsahuje pro každý rok:
+
+Maundy Thursday (zelený čtvrtek)
+
+Good Friday (Velký pátek)
+
+Holy Saturday (Bílá sobota)
+
+Easter Sunday (Velikonoční neděle)
+
+Easter Monday (Velikonoční pondělí)
+
+Ascension Day (Nanebevstoupení Páně, 39 dní po Velikonocích)
+
+Pentecost (Svatodušní neděle, 49 dní po Velikonocích)
+
+Corpus Christi (Tělo a krev Páně, 60 dní po Velikonocích)
+
+To je dohromady 8 svátků × 25 let = 200 řádků. Tabulka je univerzální pro jakýkoli rok, protože při naplňování cenové mapy porovnáváme datum s movable_holidays.
+
+4. Ceníky podle sezón (season_plan_rates)
+Zvolili jsme tři úrovně tarifů:
+
+low (budget)
+
+standard (průměrný)
+
+high (prémiový)
+
+A jednu společnou položku extra_guest_fee = 15 EUR/osoba·noc.
+
+Tabulka season_plan_rates vypadá takto:
+
+text
+Zkopírovat
+Upravit
++-------------+----------+---------------+-----------+---------------+
+| season_code | low_rate | standard_rate | high_rate | extra_guest_fee |
++-------------+----------+---------------+-----------+---------------+
+| HOL         | 105.60   | 132.00        | 158.40    | 15.00         |
+| HS          |  81.10   | 101.38        | 121.66    | 15.00         |
+| OS          |  28.00   |  35.00        |  42.00    | 15.00         |
+| SS          |  64.80   |  81.00        |  97.20    | 15.00         |
++-------------+----------+---------------+-----------+---------------+
+Tyto sazby jsme odvodili jako průměrné ceny v oblasti Scalea (Kalábrie):
+
+Off-Season ~ 28–42 EUR/noc
+
+Shoulder ~ 65–97 EUR/noc
+
+High ~ 81–122 EUR/noc
+
+Holidays ~ 106–158 EUR/noc
+
+5. Logika obsazenosti
+Zjednodušili jsme to následovně:
+
+1–2 hosté → platí full rate (např. standard_rate 132 EUR)
+
+Každý další host (3., 4., 5.+) → +15 EUR za osobu a noc
+
+Tímto modelem:
+
+nemusíme počítat složité multiplikátory,
+
+zůstáváme v souladu s praxí na krátkodobé pronájmy (fixed extra-guest fee).
+
+6. Generování cenové mapy (price_calendar)
+Tabulka price_calendar byla vytvořena s poli:
+
+price_date (DATE)
+
+season_code, description
+
+low_rate, standard_rate, high_rate
+
+extra_fee
+
+Uložená procedura fill_price_calendar(p_start, p_end):
+
+Krok 1: vymaže stávající záznamy mezi p_start a p_end.
+
+Krok 2: pro každý den curr v zadaném intervalu:
+
+Načte season_code a description z season_calendar_template podle aktuálního měsíce-dne.
+
+Pokud existuje záznam v movable_holidays pro curr, přepíše season_code na HOL a description na název svátku.
+
+Načte sazby (low_rate, standard_rate, high_rate, extra_guest_fee) z season_plan_rates podle výsledné season_code.
+
+Vloží nový řádek do price_calendar.
+
+Spuštění
+
+sql
+Zkopírovat
+Upravit
+CALL fill_price_calendar('2025-01-01','2025-12-31');
+vygeneruje kompletní denní ceník na rok 2025.
+
+Výsledek
+Máte strukturu, která bez dalšího zásahu zvládne jakoukoli kombinaci dat od-do, včetně statických i pohyblivých svátků.
+
+Ceny se dají okamžitě použít ve vaší rezervační logice, mapovat na Google Kalendář nebo vyexportovat pro reporting.
+
+Pokud budete chtít přidat další svátky nebo upravit sazby, stačí doplnit:
+
+season_calendar_template (pro statické změny sezón),
+
+recurring_holidays nebo movable_holidays (pro nové svátky),
+
+season_plan_rates (pro nové tarifní úrovně).
+
+A poté znovu spustit fill_price_calendar pro požadované období.

@@ -1,0 +1,42 @@
+# Composer
+/vendor/
+/composer.lock
+
+# Lokální konfigurace a tajné údaje
+.inc.env
+.env
+.env.*
+!.env.example
+
+# Citlivé PHP konfigurace
+inc/connect.php
+inc/connect.local.php
+inc/config.local.php
+config.local.php
+
+# Uploady a dočasné soubory
+uploads/
+tmp/
+cache/
+logs/
+
+# QR generátor uploady
+qr/uploads/
+
+# OS / editor bordel
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Logy
+*.log
+error_log
+
+# Testovací exporty / zálohy
+*.sql
+*.sql.gz
+*.bak
+*.backup

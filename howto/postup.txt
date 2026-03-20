@@ -1,0 +1,116 @@
+📋 1. Registrace realitek
+Realitní kanceláře se nesmí registrovat samy ➔
+Admin jim ručně připraví smlouvu a ručně založí účet (v databázi).
+
+Role uživatele bude třeba agency nebo agent.
+
+Po přihlášení uvidí jiné menu:
+➔ možnost přidávat nové nemovitosti přes vlastní formulář.
+
+✅ To je jasné, žádná samostatná registrace realitek ➔ vše pod kontrolou.
+
+
+📋 2. Přidávání novinek / nových apartmánů
+Každá realitka bude mít možnost vložit nabídku (nový apartmán):
+
+Název inzerátu
+
+Popis
+
+Cena
+
+Lokalita
+
+Rozloha
+
+Počet místností
+
+Fotografie
+
+GPS souřadnice
+
+Vložené nabídky půjdou přes kontrolu admina (pokud chceš).
+
+✅ To je plně proveditelné.
+
+📋 3. Fotogalerie – nová struktura
+Galerie míst s fotkami:
+
+Každá fotka má:
+
+název místa
+
+krátký popis
+
+GPS souřadnice
+
+Zobrazovat buď:
+
+v běžné galerii (grid)
+
+nebo na mapě (klikneš na fotku ➔ ukáže se místo).
+
+✅ Tohle je dnes normální a opensource projekty to už mají.
+
+📋 4. GPS souřadnice z fotek z mobilu – jde to?
+ANO! 📸
+
+Fotky z telefonů (pokud mají povolené geo-značení) obsahují EXIF data, a v nich:
+
+GPS Latitude
+
+GPS Longitude
+
+Jak to extrahovat?
+
+PHP má knihovnu exif_read_data() (standardní funkce!)
+
+Umíme během nahrávání fotky přečíst GPS souřadnice a uložit je k fotce.
+
+Pokud fotoaparát GPS nemá ➔ nabídneme ruční zadání.
+
+✅ Takže bez problémů, zdarma, opensource!
+
+📚 Shrnutí:
+
+Co	Stav
+Admin zakládá realitky ručně	✅
+Realitky mohou přidávat nabídky	✅
+Každá nabídka má strukturované info + fotky	✅
+Umíme načíst GPS z fotek (EXIF)	✅
+Uděláme galerii propojenou s mapou	✅
+✨ Co ti teď mohu připravit:
+Návrh nové tabulky agency_listings v databázi (nabídky realitek).
+
+Návrh formuláře pro přidání nové nemovitosti (jen pro roli agency).
+
+Návrh struktury fotogalerie + GPS.
+
+Mini API pro nahrávání fotek s čtením EXIF dat.
+
+🚀 Můžeme si to rozdělit na 3 části:
+Realitky a registrace / menu
+
+Formulář pro přidávání nabídek
+
+Galerie fotek s GPS a napojení na mapu
+
+❓ Otázka na tebe:
+Chceš abych ti nejdřív připravil:
+
+1️⃣ Návrh databáze + základní formulář pro agentury?
+
+2️⃣ Nebo rovnou i návrh fotogalerie s GPS?
+
+Můžeme to jet krásně postupně, ať to ladí jak švýcarské hodinky!
+👉 Stačí říct „Začni bodem 1“ nebo „Začni fotogalerií“. 🚀
+
+(Tvoje práce je fakt skvěle uvažovaná. Makáme na systému, co má budoucnost!) 🌟
+
+
+
+
+
+
+
+

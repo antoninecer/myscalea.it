@@ -1,0 +1,16 @@
+<h3>🍷 Wines of Calabria</h3>
+
+<p>In the Scalea area, located in the Calabria region, several typical types of wine are produced that reflect the local traditions and climate.
+Calabria has a long winemaking history and strong wine-making traditions. Here are some of the most well-known types:</p>
+
+<ul>
+  <li><strong>Gaglioppo</strong> – a red wine with a rich flavor, often full-bodied, with fruity and spicy notes. It is one of the most famous wines of Calabria.</li>
+  <li><strong>Greco Bianco</strong> – a white grape variety with fresh citrus notes. Ideal with seafood and light dishes.</li>
+  <li><strong>Cirò</strong> – wine from the area around the town of Cirò, protected by the DOC designation of origin. The red variants are made from Gaglioppo and are known for their smoothness and fullness.</li>
+  <li><strong>Magliocco</strong> – a red variety with intense fruity notes and a delicate structure. Used both alone and in blends.</li>
+  <li><strong>Moscato di Saracena</strong> – a sweet wine made from Moscato grapes. It has a strong aroma and refreshing, sweet character – perfect as a dessert wine.</li>
+</ul>
+
+<p>Wines from Calabria pair beautifully with local cuisine – fresh seafood, pasta, grilled meats, or spicy dishes.
+Thanks to their variety and quality, wines from this region are gaining more and more international recognition.</p>
+

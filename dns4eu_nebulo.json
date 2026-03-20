@@ -1,0 +1,37 @@
+[
+  {
+    "name": "DNS4EU - Základní",
+    "address": "193.29.60.34",
+    "port": 53,
+    "altAddress": "185.150.99.255",
+    "altPort": 53
+  },
+  {
+    "name": "DNS4EU - Malware",
+    "address": "193.29.60.35",
+    "port": 53,
+    "altAddress": "185.150.99.254",
+    "altPort": 53
+  },
+  {
+    "name": "DNS4EU - Malware + Reklamy",
+    "address": "193.29.60.36",
+    "port": 53,
+    "altAddress": "185.150.99.253",
+    "altPort": 53
+  },
+  {
+    "name": "DNS4EU - Dětský profil",
+    "address": "193.29.60.37",
+    "port": 53,
+    "altAddress": "185.150.99.252",
+    "altPort": 53
+  },
+  {
+    "name": "DNS4EU - Dospělý profil",
+    "address": "193.29.60.38",
+    "port": 53,
+    "altAddress": "185.150.99.251",
+    "altPort": 53
+  }
+]

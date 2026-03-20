@@ -1,0 +1,44 @@
+Potvrzení o spolupráci a zadání požadavků
+
+Tímto potvrzuji, že já, níže podepsaný:
+Jméno: {{name}}
+E-mail: {{email}}
+
+svým podpisem beru na vědomí a souhlasím s tím, že:
+- prostřednictvím projektu myscalea.it mi bude poskytována pomoc při hledání vhodné nemovitosti v Itálii,
+- bude mi nabídnuto doporučení na základě mých individuálních požadavků a možností,
+- budou mi vysvětlena reálná specifika trhu a upozornění na možná rizika,
+- mé kontaktní údaje mohou být po dohodě předány spolupracujícím realitním kancelářím za účelem nalezení optimální nabídky.
+
+Obsah spolupráce:
+- Doporučení vhodných nemovitostí dle individuálních požadavků klienta.
+- Vysvětlení reálných možností v daných lokalitách a cenových hladinách.
+- Upozornění na případná rizika a nevýhodné nabídky.
+- Asistence při výběru nemovitosti a komunikaci s realitními kancelářemi.
+- Zasílání nabídek a informací elektronicky (e-mailem).
+
+Možné náklady:
+Klient bere na vědomí, že po vzájemné dohodě mohou být některé služby hrazeny samostatně, zejména:
+- zajištění technika pro fyzickou prohlídku nemovitosti v zastoupení,
+- zprostředkování administrativní asistence při rezervaci, koupi a převodu nemovitosti.
+O všech poplatcích bude klient vždy informován předem.
+
+Další postup:
+V případě zájmu o pokračování spolupráce bude klientovi nabídnuto uzavření smlouvy o asistenci při nákupu nemovitosti.
+
+Shrnutí základních požadavků klienta:
+- Účel koupě: {{$_POST['Účel']}}
+- Pronájem: {{rental}} (forma: {{rental_form}})
+- Vlastnosti:
+  Ložnice: {{bedrooms}} | Koupelny: {{bathrooms}} | Balkon / terasa: {{balcony}} | Minimální plocha: {{min_area}} m²
+  Parkování: {{parking}} | Rozsah pater: {{floors_range}} | Výtah od patra: {{elevator_from}}
+  Vzdálenost od moře: {{distance_sea}} | Vzdálenost od centra: {{distance_center}}
+- Financování: {{financing}}
+- Cenový strop: {{price_cap}} EUR
+- Forma prohlídek: {{viewing_form}}
+
+Dne: {{today}}
+
+__________________________
+Podpis klienta
+

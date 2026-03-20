@@ -1,0 +1,31 @@
+Dobrý den {{name}},
+
+na stránkách MyScalea.it jste zadal požadavek na vyhledání vhodné nemovitosti v Itálii. Vaše přání obsahuje následující parametry:
+
+{{requirements}}
+
+Pro potvrzení a ověření Vaší e-mailové adresy prosím klikněte na následující odkaz:
+
+{{verification_link}}
+
+Po ověření Vás budeme kontaktovat ohledně dalších kroků.
+
+S pozdravem,  
+Tým MyScalea.it
+
+---
+
+Hello {{name}},
+
+you have submitted a property request on MyScalea.it for a real estate search in Italy. Your request includes the following preferences:
+
+{{requirements}}
+
+To confirm and verify your email address, please click the following link:
+
+{{verification_link}}
+
+Once verified, we will contact you for the next steps.
+
+Best regards,  
+MyScalea.it Team

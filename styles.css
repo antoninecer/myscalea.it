@@ -1,0 +1,217 @@
+.logo-link {
+  text-decoration: none;
+  color: white;
+}
+
+.logo-link:hover {
+  text-decoration: underline;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+header {
+  position: relative;
+  background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 60px 20px 20px;
+  text-align: center;
+}
+
+header::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+header h1, header p, .cta-button {
+  position: relative;
+  z-index: 1;
+}
+
+header h1 {
+  font-size: 2.8em;
+  margin: 0;
+}
+
+header p {
+  font-size: 1.4em;
+  margin-top: 10px;
+}
+
+.section {
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.apartments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.apartment {
+  flex: 1 1 calc(50% - 20px);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.apartment img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.apartment h3 {
+  margin: 10px;
+}
+
+.apartment p {
+  margin: 0 10px 10px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #eee;
+  font-size: 0.9em;
+}
+
+.cta-button {
+  background-color: #007BFF;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1.1em;
+}
+
+ul li {
+  margin-bottom: 8px;
+}
+
+.nav-button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  font-size: 0.95em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  display: inline-block;
+  margin: 5px 0;
+}
+.nav-button:hover {
+  background-color: #0056b3;
+}
+
+#burger {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 24px;
+  background: #fff;
+  color: #333;
+  padding: 8px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 2001;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#sideMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* celá šířka na mobilu */
+  max-width: 260px; /* ale maximálně 260px */
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+  padding: 20px;
+  z-index: 2000;
+  transition: transform 0.3s ease;
+  transform: translateX(-100%);
+  overflow-y: auto;
+}
+
+#sideMenu.open {
+  transform: translateX(0);
+}
+
+#sideMenu a {
+  display: block;
+  padding: 8px 0;
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#sideMenu a:hover {
+  text-decoration: underline;
+}
+
+#sideMenu h3 {
+  margin-top: 0;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: 20px 15px;
+    margin-bottom: 10px;
+  }
+}
+.modal-fullscreen {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 3000; /* vyšší než #sideMenu i #burger */
+}
+
+.modal-fullscreen .modal-content {
+  position: relative;
+  background: #fff;
+  width: 90vw;
+  max-width: 1000px;
+  height: 90vh;
+  margin: 5vh auto;
+  border-radius: 10px;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+}
+
+.mare-flag { display:inline-flex; align-items:center; }

@@ -1,0 +1,95 @@
+<?php
+session_start();
+require_once 'inc/connect.php';
+
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'user') {
+  echo "<h2>Moje cesta k nové rezidenci u moře</h2>
+  <p>Tato stránka je určena pro klienty, kteří hledají nemovitost v Itálii se zajištěným servisem a férovým přístupem.</p>
+  <p>U nás nečekejte žádné přirážky, zmatky nebo nátlak. Nejdříve si ujasníme, co hledáte a do jakého rozpočtu se chcete vejít. Vše s vámi projdeme krok po kroku, ať už osobně nebo online. Po přihlášení uvidíte přehled všech kroků vašeho případu.</p>
+  <p><a href='client_request.php'><strong>👉 Vytvořit klientský účet</strong></a></p>
+  <p>Máte už účet? <a href='login.php'>Přihlásit se</a></p>";
+  exit;
+}
+
+$email = $_SESSION['user']['email'];
+$stmt = $pdo->prepare("SELECT * FROM clients WHERE email = ? LIMIT 1");
+$stmt->execute([$email]);
+$client = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$client) {
+    echo "<p>Nemáme u vás zatím žádný požadavek. <a href='/client_request.php'>Zadat přání</a></p>";
+    exit;
+}
+
+$stmt = $pdo->prepare("SELECT * FROM client_logs WHERE client_id = ? ORDER BY created_at DESC");
+$stmt->execute([$client['id']]);
+$logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$req = json_decode($client['requirements'], true);
+
+// Získání údajů z posledního záznamu typu "První kontakt"
+$firstContact = null;
+foreach ($logs as $log) {
+    if ($log['action'] === 'První kontakt') {
+        parse_str(strtr($log['note'], ["\n" => "&", ": " => "="]), $firstContact);
+        break;
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Moje cesta k nemovitosti</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+    h2 { color: #333; }
+    .card { background: #f9f9f9; padding: 15px; border: 1px solid #ccc; margin-bottom: 20px; }
+    .log-entry { border-bottom: 1px dashed #aaa; margin-bottom: 10px; padding-bottom: 5px; }
+    .download-section { background: #e8f5e9; padding: 15px; margin-bottom: 20px; border: 1px solid #a5d6a7; }
+  </style>
+</head>
+<body>
+<h2>Moje cesta k nemovitosti</h2>
+<p>Vítáme tě, <strong><?= htmlspecialchars($client['name']) ?></strong></p>
+
+<div class="card">
+  <h3>Počáteční přání</h3>
+  <p><strong>Počet pokojů:</strong> <?= htmlspecialchars($req['rooms']) ?><br>
+     <strong>Rozloha:</strong> <?= htmlspecialchars($req['area']) ?> m²<br>
+     <strong>Lokalita:</strong> <?= htmlspecialchars($req['location']) ?><br>
+     <strong>Rozpočet:</strong> <?= number_format($req['budget'], 0, ',', ' ') ?> EUR</p>
+</div>
+
+<div class="card">
+  <h3>Stav zpracování</h3>
+  <?php if ($logs): ?>
+    <?php foreach ($logs as $log): ?>
+      <div class="log-entry">
+        <strong><?= date('d.m.Y H:i', strtotime($log['created_at'])) ?> – <?= htmlspecialchars($log['action']) ?></strong><br>
+        <?= nl2br(htmlspecialchars($log['note'])) ?>
+      </div>
+    <?php endforeach; ?>
+    <?php if ($logs[0]['action'] === 'První kontakt' && $firstContact): ?>
+      <div class="download-section">
+        <p>📄 Na základě vašeho rozhovoru s naším specialistou jsme pro vás připravili smlouvu o smlouvě budoucí.</p>
+        <form action="client_future_contract.php" method="POST" target="_blank">
+          <input type="hidden" name="name" value="<?= $client['name'] ?>">
+          <input type="hidden" name="email" value="<?= $client['email'] ?>">
+          <?php foreach ($firstContact as $key => $value): ?>
+            <input type="hidden" name="<?= htmlspecialchars($key) ?>" value="<?= htmlspecialchars($value) ?>">
+          <?php endforeach; ?>
+          <button type="submit">📄 Zobrazit smlouvu k tisku</button>
+        </form>
+        <p>Nebo naskenujte podepsanou smlouvu a <a href="client_upload_document.php">nahrajte ji zde</a>.</p>
+      </div>
+    <?php endif; ?>
+  <?php else: ?>
+    <p>Zatím jsme se s vámi nespojili. Ozveme se brzy!</p>
+  <?php endif; ?>
+</div>
+
+<p><a href="/">🏠 Zpět na hlavní stránku</a></p>
+</body>
+</html>
