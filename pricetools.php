@@ -16,17 +16,17 @@ class PriceCalendarUtil {
     /** @var PDO */
     protected $pdo;
 
-    public function __construct(PDO \$pdo) {
-        \$this->pdo = \$pdo;
+    public function __construct(PDO $pdo) {
+        $this->pdo = $pdo;
         // Set PDO to throw exceptions
-        \$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     /**
      * Create or update a season rate entry.
      */
-    public function setSeasonPlanRate(string \$seasonCode, float \$low, float \$standard, float \$high, float \$extra): void {
-        \$sql = "
+    public function setSeasonPlanRate(string $seasonCode, float $low, float $standard, float $high, float $extra): void {
+        $sql = "
             INSERT INTO season_plan_rates
               (season_code, low_rate, standard_rate, high_rate, extra_guest_fee)
             VALUES
@@ -37,23 +37,23 @@ class PriceCalendarUtil {
               high_rate = VALUES(high_rate),
               extra_guest_fee = VALUES(extra_guest_fee)
         ";
-        \$stmt = \$this->pdo->prepare(\$sql);
-        \$stmt->execute([
-            ':season' => \$seasonCode,
-            ':low'    => \$low,
-            ':std'    => \$standard,
-            ':high'   => \$high,
-            ':extra'  => \$extra
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':season' => $seasonCode,
+            ':low'    => $low,
+            ':std'    => $standard,
+            ':high'   => $high,
+            ':extra'  => $extra
         ]);
-        echo "Season plan rate for {\$seasonCode} set.\n";
+        echo "Season plan rate for {$seasonCode} set.\n";
     }
 
     /**
      * Create or update a template entry (recurring season calendar).
      * dateCode in 'MM-DD' format.
      */
-    public function setSeasonCalendarTemplate(string \$dateCode, string \$description): void {
-        \$sql = "
+    public function setSeasonCalendarTemplate(string $dateCode, string $description): void {
+        $sql = "
             INSERT INTO season_calendar_template
               (date_code, description)
             VALUES
@@ -61,19 +61,19 @@ class PriceCalendarUtil {
             ON DUPLICATE KEY UPDATE
               description = VALUES(description)
         ";
-        \$stmt = \$this->pdo->prepare(\$sql);
-        \$stmt->execute([
-            ':code' => \$dateCode,
-            ':desc' => \$description
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':code' => $dateCode,
+            ':desc' => $description
         ]);
-        echo "Template for date code {\$dateCode} set.\n";
+        echo "Template for date code {$dateCode} set.\n";
     }
 
     /**
      * Add or update a movable holiday by exact date.
      */
-    public function addMovableHoliday(string \$date, string \$name): void {
-        \$sql = "
+    public function addMovableHoliday(string $date, string $name): void {
+        $sql = "
             INSERT INTO movable_holidays
               (holiday_date, holiday_name)
             VALUES
@@ -81,21 +81,21 @@ class PriceCalendarUtil {
             ON DUPLICATE KEY UPDATE
               holiday_name = VALUES(holiday_name)
         ";
-        \$stmt = \$this->pdo->prepare(\$sql);
-        \$stmt->execute([
-            ':date' => \$date,
-            ':name' => \$name
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':date' => $date,
+            ':name' => $name
         ]);
-        echo "Movable holiday on {\$date} named '{\$name}' set.\n";
+        echo "Movable holiday on {$date} named '{$name}' set.\n";
     }
 
     /**
      * Populate the price_calendar table by calling the stored procedure.
      */
-    public function applyCalendar(string \$start, string \$end): void {
-        \$stmt = \$this->pdo->prepare('CALL fill_price_calendar(:start, :end)');
-        \$stmt->execute([':start' => \$start, ':end' => \$end]);
-        echo "Price calendar filled from {\$start} to {\$end}.\n";
+    public function applyCalendar(string $start, string $end): void {
+        $stmt = $this->pdo->prepare('CALL fill_price_calendar(:start, :end)');
+        $stmt->execute([':start' => $start, ':end' => $end]);
+        echo "Price calendar filled from {$start} to {$end}.\n";
     }
 }
 
@@ -106,37 +106,37 @@ $options = getopt('', [
     'date:', 'name:',
     'start:', 'end:'
 ]);
-$args = array_slice(\$argv, 1);
-if (empty(\$args)) {
+$args = array_slice($argv, 1);
+if (empty($args)) {
     echo "No command specified. Available: set-rate, set-template, add-holiday, apply\n";
     exit(1);
 }
 
 // Initialize PDO
 try {
-    \$pdo = new PDO('mysql:host=localhost;dbname=myscalea;charset=utf8mb4', 'root', '');
-} catch (PDOException \$e) {
-    echo "DB Connection failed: " . \$e->getMessage() . "\n";
+    $pdo = new PDO('mysql:host=localhost;dbname=myscalea;charset=utf8mb4', 'root', '');
+} catch (PDOException $e) {
+    echo "DB Connection failed: " . $e->getMessage() . "\n";
     exit(1);
 }
 
-\$util = new PriceCalendarUtil(\$pdo);
-\$command = \$args[0];
-switch (\$command) {
+$util = new PriceCalendarUtil($pdo);
+$command = $args[0];
+switch ($command) {
     case 'set-rate':
-        \$util->setSeasonPlanRate(\$options['season'], \$options['low'], \$options['standard'], \$options['high'], \$options['extra']);
+        $util->setSeasonPlanRate($options['season'], $options['low'], $options['standard'], $options['high'], $options['extra']);
         break;
     case 'set-template':
-        \$util->setSeasonCalendarTemplate(\$options['date-code'], \$options['description']);
+        $util->setSeasonCalendarTemplate($options['date-code'], $options['description']);
         break;
     case 'add-holiday':
-        \$util->addMovableHoliday(\$options['date'], \$options['name']);
+        $util->addMovableHoliday($options['date'], $options['name']);
         break;
     case 'apply':
-        \$util->applyCalendar(\$options['start'], \$options['end']);
+        $util->applyCalendar($options['start'], $options['end']);
         break;
     default:
-        echo "Unknown command '{\$command}'.\n";
+        echo "Unknown command '{$command}'.\n";
         exit(1);
 }
 
