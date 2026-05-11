@@ -38,11 +38,11 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="map-page">
 <?php require_once __DIR__ . '/../menu.php'; ?>
 
-<button id="mapControlsToggle" class="map-controls-toggle" type="button" aria-expanded="false" aria-controls="mapControls">
-  ☰ Map tools
+<button id="mapControlsToggle" class="map-controls-toggle" type="button" aria-expanded="true" aria-controls="mapControls">
+  🔎 Filters
 </button>
 
-<aside id="mapControls" class="map-controls-panel" aria-label="Map filters">
+<aside id="mapControls" class="map-controls-panel is-open" aria-label="Map filters">
   <div class="map-controls-header">
     <strong>🗺️ Scalea Map</strong>
     <button type="button" id="mapControlsClose" aria-label="Hide filters">×</button>
@@ -125,43 +125,21 @@ const mapControlsToggle = document.getElementById('mapControlsToggle');
 const mapControlsClose = document.getElementById('mapControlsClose');
 const mapControls = document.getElementById('mapControls');
 
-function setMapControls(open, remember = true) {
+function setMapControls(open) {
   if (!mapControls || !mapControlsToggle) return;
   mapControls.classList.toggle('is-open', open);
-  document.body.classList.toggle('map-tools-open', open);
   mapControlsToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  mapControlsToggle.innerHTML = open ? '× Close tools' : '☰ Map tools';
-  if (remember) {
-    try {
-      localStorage.setItem('myscalea_map_tools_open', open ? '1' : '0');
-    } catch (e) {}
-  }
 }
 
 if (mapControlsToggle && mapControls) {
   mapControlsToggle.addEventListener('click', () => {
     setMapControls(!mapControls.classList.contains('is-open'));
   });
-
-  // Desktop can start open, mobile starts closed. User choice is remembered.
-  let storedState = null;
-  try {
-    storedState = localStorage.getItem('myscalea_map_tools_open');
-  } catch (e) {}
-
-  const defaultOpen = window.matchMedia('(min-width: 900px)').matches;
-  setMapControls(storedState === null ? defaultOpen : storedState === '1', false);
 }
 
 if (mapControlsClose && mapControls) {
   mapControlsClose.addEventListener('click', () => setMapControls(false));
 }
-
-document.addEventListener('keydown', function (event) {
-  if (event.key === 'Escape') {
-    setMapControls(false);
-  }
-});
 
 // Weather toggle from cookie
 const weatherBox = document.getElementById('weather');
@@ -398,6 +376,13 @@ document.addEventListener('click', function(e) {
 
 document.querySelectorAll('.category-toggle').forEach(cb => cb.addEventListener('change', renderMarkers));
 document.getElementById('onlyOpenToggle').addEventListener('change', renderMarkers);
+
+document.getElementById('burger').addEventListener('click', () => {
+  const c = document.getElementById('controls');
+  if (c) {
+    c.style.display = c.style.display === 'none' ? 'block' : 'none';
+  }
+});
 
 
 async function fetchWeather() {

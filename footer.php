@@ -1,92 +1,74 @@
-</main>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div>&copy; <?= date('Y') ?> MyScalea.it</div>
-    <a href="https://x.com/RightDoneEU" target="_blank" rel="noopener noreferrer">Sledujte nás na X: @RightDoneEU</a>
-  </div>
+<footer>
+  &copy; 2025 MyScalea.it <a href="https://x.com/RightDoneEU" target="_blank" rel="noopener noreferrer">Sledujte nás na X: @RightDoneEU</a>
 </footer>
 
 <script>
-(function () {
-  const burger = document.getElementById('burger');
-  const sideMenu = document.getElementById('sideMenu');
-  const overlay = document.getElementById('menuOverlay');
-  const closeBtn = document.getElementById('menuClose');
+  (function () {
+    const nav = document.getElementById('topNav');
+    const toggle = document.getElementById('topNavToggle');
+    const menu = document.getElementById('topNavMenu');
 
-  function setMenu(open) {
-    if (!burger || !sideMenu || !overlay) return;
+    if (toggle && menu) {
+      toggle.addEventListener('click', function () {
+        const isOpen = menu.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        document.body.classList.toggle('nav-open', isOpen);
+      });
 
-    sideMenu.classList.toggle('open', open);
-    document.body.classList.toggle('menu-open', open);
-    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    sideMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
-    overlay.hidden = !open;
+      menu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          menu.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+          document.body.classList.remove('nav-open');
+        });
+      });
 
-    if (open && closeBtn) {
-      closeBtn.focus();
-    }
-  }
-
-  if (burger && sideMenu && overlay) {
-    burger.addEventListener('click', function () {
-      setMenu(!sideMenu.classList.contains('open'));
-    });
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function () {
-        setMenu(false);
-        burger.focus();
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          menu.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+          document.body.classList.remove('nav-open');
+        }
       });
     }
 
-    overlay.addEventListener('click', function () {
-      setMenu(false);
-    });
+    function updateNavStyle() {
+      if (!nav) return;
+      nav.classList.toggle('is-scrolled', window.scrollY > 12);
+    }
 
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') {
-        setMenu(false);
-      }
-    });
-  }
+    updateNavStyle();
+    window.addEventListener('scroll', updateNavStyle, { passive: true });
+  })();
 
   function updateClock() {
-    const clock = document.getElementById('clock');
-    if (!clock) return;
-
+    const el = document.getElementById('clock');
+    if (!el) return;
     const now = new Date();
-    clock.textContent = now.toLocaleTimeString('cs-CZ');
+    el.textContent = now.toLocaleTimeString('cs-CZ');
   }
-
-  updateClock();
   setInterval(updateClock, 1000);
+  updateClock();
 
   async function fetchWeather() {
-    const weather = document.getElementById('weather');
-    if (!weather) return;
+    const el = document.getElementById('weather');
+    if (!el) return;
 
     try {
       const res = await fetch('https://wttr.in/Scalea?format=j1');
       const data = await res.json();
-      const current = data.current_condition && data.current_condition[0];
-
-      if (!current) {
-        weather.textContent = 'Weather unavailable.';
-        return;
-      }
-
-      const desc = current.weatherDesc && current.weatherDesc[0] ? current.weatherDesc[0].value : 'Weather';
+      const current = data.current_condition[0];
+      const desc = current.weatherDesc[0].value;
       const temp = current.temp_C;
       const wind = current.windspeedKmph;
-      weather.textContent = `${desc}, ${temp}°C, wind ${wind} km/h`;
+      el.textContent = `${desc}, ${temp}°C, wind ${wind} km/h`;
     } catch (e) {
-      weather.textContent = 'Weather unavailable.';
+      el.textContent = 'Weather unavailable.';
     }
   }
-
   fetchWeather();
-})();
 </script>
+
+
 </body>
 </html>

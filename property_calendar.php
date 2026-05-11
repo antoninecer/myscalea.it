@@ -91,6 +91,15 @@ $pendingJson = json_encode($pendingDates);
 $disabledJson = json_encode($disabled);
 
 $visitorLoggedIn = isset($_SESSION['visitor_id']);
+$visitor = null;
+
+if ($visitorLoggedIn) {
+    $visitorStmt = $pdo->prepare("SELECT name, email, phone FROM visitors WHERE id = ?");
+    $visitorStmt->execute([$_SESSION['visitor_id']]);
+    $visitor = $visitorStmt->fetch(PDO::FETCH_ASSOC) ?: null;
+}
+
+$maxOccupancy = max(1, (int)($property['max_occupancy'] ?? 6));
 
 include 'header.php';
 include 'menu.php';
@@ -104,63 +113,193 @@ include 'menu.php';
     Zelená = k dispozici,
     žlutá = čeká na potvrzení,
     červená = obsazeno.
-    Ceny jsou orientační za noc (standardní sazba). Pro slevy se přihlaste jako návštěvník.
+    Cena se počítá po jednotlivých nocích podle sezóny a počtu osob.
   </p>
 
-  <div style="display: flex; gap: 2em; align-items: flex-start; flex-wrap: wrap;">
-    <div>
+  <div class="booking-layout">
+    <div class="booking-calendar-panel">
       <input
         type="text"
         id="calendar-view"
         placeholder="Vyberte datum"
         readonly
-        style="width: 100%; padding: 10px; font-size: 1.2em;"
+        class="booking-input"
       >
 
-      <label for="guests" style="display:block; margin-top:10px; font-weight:bold;">
-  Počet osob
-</label>
-<input
-  type="number"
-  id="guests"
-  placeholder="Počet osob"
-  value="2"
-  min="1"
-  max="<?= (int)$property['max_occupancy'] ?>"
-  style="padding: 10px; width: 100%;"
->
+      <label for="guests" class="booking-label">
+        Počet osob
+      </label>
+      <input
+        type="number"
+        id="guests"
+        placeholder="Počet osob"
+        value="2"
+        min="1"
+        max="<?= $maxOccupancy ?>"
+        class="booking-input"
+      >
 
-      <button onclick="calculatePrice()" style="margin-top:10px; padding: 10px; width: 100%;">
+      <button type="button" onclick="calculatePrice()" class="booking-button">
         Spočítat cenu
       </button>
     </div>
 
-    <div id="price-result" style="min-width: 300px; max-width: 400px; font-family: monospace;"></div>
+    <div id="price-result" class="booking-price-result"></div>
   </div>
 
-  <?php if ($visitorLoggedIn): ?>
-    <div id="reservation-form" style="margin-top: 20px; display: none;">
-      <h3>Complete your reservation</h3>
-      <form method="POST" action="submit_reservation.php">
-        <input type="hidden" name="range" id="res-range">
-        <input type="hidden" name="guests" id="res-guests">
-        <input type="hidden" name="property_id" value="<?= $propertyId ?>">
-        <input type="hidden" name="total" id="res-total">
+  <div id="reservation-form" class="booking-reservation-box" style="display: none;">
+    <h3>Rezervace bez registrace</h3>
+    <p>
+      Vyplňte kontaktní údaje. Termín se uloží jako předběžná rezervace a platební instrukce dorazí e-mailem.
+    </p>
 
-        <button type="submit">Submit Reservation</button>
-      </form>
-    </div>
-  <?php else: ?>
-    <div style="margin-top: 20px;">
-      <p><strong>Pro dokončení rezervace se prosím <a href="visitor_login.php">přihlaste</a> nebo <a href="visitor_register.php">zaregistrujte</a>.</strong></p>
-    </div>
-  <?php endif; ?>
+    <?php if ($visitorLoggedIn && $visitor): ?>
+      <p class="booking-note">
+        Jste přihlášen(a) jako <?= htmlspecialchars($visitor['name']) ?>.
+        Údaje můžete upravit jen pro tuto rezervaci.
+      </p>
+    <?php endif; ?>
+
+    <form method="POST" action="submit_reservation.php" class="booking-form">
+      <input type="hidden" name="range" id="res-range">
+      <input type="hidden" name="guests" id="res-guests">
+      <input type="hidden" name="property_id" value="<?= $propertyId ?>">
+
+      <label for="guest_name">Jméno a příjmení</label>
+      <input
+        type="text"
+        name="guest_name"
+        id="guest_name"
+        required
+        value="<?= htmlspecialchars($visitor['name'] ?? '') ?>"
+      >
+
+      <label for="guest_email">E-mail</label>
+      <input
+        type="email"
+        name="guest_email"
+        id="guest_email"
+        required
+        value="<?= htmlspecialchars($visitor['email'] ?? '') ?>"
+      >
+
+      <label for="guest_phone">Telefon / WhatsApp</label>
+      <input
+        type="text"
+        name="guest_phone"
+        id="guest_phone"
+        value="<?= htmlspecialchars($visitor['phone'] ?? '') ?>"
+      >
+
+      <label for="guest_note">Poznámka</label>
+      <textarea
+        name="guest_note"
+        id="guest_note"
+        rows="4"
+        placeholder="Čas příjezdu, počet dětí, dotaz k apartmánu..."
+      ></textarea>
+
+      <label class="booking-checkbox">
+        <input type="checkbox" name="privacy_agree" value="1" required>
+        Souhlasím se zpracováním údajů pro vyřízení rezervace.
+      </label>
+
+      <button type="submit" class="booking-button booking-button-primary">
+        Odeslat předběžnou rezervaci
+      </button>
+    </form>
+  </div>
 </section>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <style>
+  .booking-layout {
+    display: flex;
+    gap: 2em;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .booking-calendar-panel {
+    min-width: 280px;
+    max-width: 100%;
+  }
+
+  .booking-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.05em;
+    box-sizing: border-box;
+  }
+
+  .booking-label {
+    display:block;
+    margin-top:10px;
+    font-weight:bold;
+  }
+
+  .booking-button {
+    margin-top:10px;
+    padding: 11px 16px;
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .booking-button-primary {
+    background: #0f766e;
+    color: white;
+  }
+
+  .booking-price-result {
+    min-width: 300px;
+    max-width: 460px;
+    font-family: monospace;
+    overflow-x: auto;
+  }
+
+  .booking-reservation-box {
+    margin-top: 24px;
+    padding: 18px;
+    border: 1px solid #d7e5e2;
+    border-radius: 16px;
+    background: #f7fffd;
+    max-width: 720px;
+  }
+
+  .booking-form label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 700;
+  }
+
+  .booking-form input[type="text"],
+  .booking-form input[type="email"],
+  .booking-form textarea {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #cbd5d1;
+    border-radius: 10px;
+  }
+
+  .booking-checkbox {
+    display: flex !important;
+    gap: 8px;
+    align-items: flex-start;
+    font-weight: 400 !important;
+  }
+
+  .booking-note {
+    padding: 10px;
+    background: #eef9f6;
+    border-radius: 10px;
+  }
+
   .flatpickr-calendar {
     font-size: 16px;
   }
@@ -205,6 +344,28 @@ include 'menu.php';
     font-size: 12px;
     color: #555;
   }
+
+  @media (max-width: 760px) {
+    .booking-layout {
+      display: block;
+    }
+
+    .booking-price-result {
+      min-width: 0;
+      max-width: 100%;
+      margin-top: 16px;
+    }
+
+    .flatpickr-day {
+      height: 52px !important;
+      width: 52px !important;
+      font-size: 14px;
+    }
+
+    .day-price {
+      font-size: 10px;
+    }
+  }
 </style>
 
 <script>
@@ -230,11 +391,10 @@ function initCalendar() {
     minDate: new Date(),
     onDayCreate: function(dObj, dStr, fp, dayElem) {
       const d = dayElem.dateObj;
-      //const date = d.toISOString().split('T')[0];
       const date =
-  d.getFullYear() + '-' +
-  String(d.getMonth() + 1).padStart(2, '0') + '-' +
-  String(d.getDate()).padStart(2, '0');
+        d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
       dayElem.innerHTML = '';
 
       const dateDiv = document.createElement('div');
@@ -275,17 +435,10 @@ function calculatePrice() {
     .then(res => res.text())
     .then(html => {
       document.getElementById("price-result").innerHTML = html;
-
-      <?php if ($visitorLoggedIn): ?>
       document.getElementById("reservation-form").style.display = 'block';
       document.getElementById("res-range").value = range;
       document.getElementById("res-guests").value = guests;
-
-      const totalMatch = html.match(/Total amount:\s*([\d,.]+)/);
-      if (totalMatch) {
-        document.getElementById("res-total").value = totalMatch[1].replace(',', '.');
-      }
-      <?php endif; ?>
+      document.getElementById("reservation-form").scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 }
 </script>
