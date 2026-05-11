@@ -31,6 +31,10 @@ Thumbs.db
 .idea/
 .vscode/
 
+# MaxMind GeoLite databases
+GeoLite2-*.mmdb
+*.mmdb
+
 # Logy
 *.log
 error_log
