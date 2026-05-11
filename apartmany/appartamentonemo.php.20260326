@@ -1,0 +1,1040 @@
+<?php
+session_start();
+require_once __DIR__ . '/../inc/connect.php';
+include __DIR__ . '/../header.php';
+include __DIR__ . '/../menu.php';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appartamento Nemo – Guest Guide</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        :root {
+            --bg: #f7f4ef;
+            --card: #ffffff;
+            --soft: #f3ede5;
+            --soft-2: #faf7f2;
+            --text: #334155;
+            --muted: #6b7280;
+            --heading: #243447;
+            --accent: #c98f65;
+            --accent-dark: #a86e43;
+            --border: #e9dfd2;
+            --shadow: 0 10px 30px rgba(36, 52, 71, 0.08);
+            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, #fffaf4 0%, transparent 35%),
+                radial-gradient(circle at top right, #f9efe5 0%, transparent 30%),
+                linear-gradient(180deg, #fbf8f3 0%, #f6f1ea 100%);
+        }
+
+        a {
+            color: var(--accent-dark);
+        }
+
+        .page-wrap {
+            max-width: 1180px;
+            margin: 40px auto 48px;
+            padding: 0 20px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(248,242,235,0.96));
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            padding: 28px;
+            margin-bottom: 28px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .hero-copy h1 {
+            margin: 0 0 10px;
+            font-size: 3rem;
+            line-height: 1.08;
+            color: var(--heading);
+            letter-spacing: -0.03em;
+        }
+
+        .hero-copy p {
+            margin: 0 0 18px;
+            font-size: 1.08rem;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 60ch;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 18px 0 22px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: var(--soft-2);
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            color: var(--heading);
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .hero-button,
+        .hero-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border-radius: 999px;
+            padding: 13px 20px;
+            font-weight: 600;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .hero-button {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(201, 143, 101, 0.24);
+            border: 0;
+            cursor: pointer;
+        }
+
+        .hero-button:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        .hero-link {
+            background: #fff;
+            color: var(--heading);
+            border: 1px solid var(--border);
+        }
+
+        .hero-link:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 320px;
+            background: linear-gradient(180deg, #fff 0%, #f8f1e9 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            padding: 16px;
+        }
+
+        .hero-visual img {
+            width: 100%;
+            max-width: 420px;
+            height: auto;
+            display: block;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 28px;
+        }
+
+        .main-column,
+        .side-column {
+            min-width: 0;
+        }
+
+        .section-card {
+            background: rgba(255,255,255,0.95);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 26px;
+            margin-bottom: 24px;
+        }
+
+        .section-card h2 {
+            margin: 0 0 16px;
+            font-size: 1.55rem;
+            color: var(--heading);
+            letter-spacing: -0.02em;
+        }
+
+        .section-card p {
+            margin: 0 0 14px;
+            line-height: 1.75;
+            color: var(--muted);
+        }
+
+        .plain-list,
+        .contact-list,
+        .route-list,
+        .amenities-list {
+            margin: 0;
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .contact-list li {
+            margin: 0 0 12px;
+        }
+
+        .icon {
+            display: inline-block;
+            min-width: 22px;
+            margin-right: 8px;
+        }
+
+        .detail-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .detail-item {
+            background: var(--soft-2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 16px;
+        }
+
+        .detail-item strong {
+            color: var(--heading);
+        }
+
+        .amenities-list {
+            columns: 2;
+            column-gap: 28px;
+        }
+
+        .amenities-list li {
+            break-inside: avoid;
+        }
+
+        .note {
+            margin-top: 14px;
+            background: #fcf8f2;
+            border: 1px solid #ecdcca;
+            border-radius: 16px;
+            padding: 14px 16px;
+            color: var(--text);
+            line-height: 1.75;
+        }
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+    align-items: start;
+}
+
+.photo-card {
+    margin: 0;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(36, 52, 71, 0.08);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.photo-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(36, 52, 71, 0.14);
+}
+
+.photo-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.25s ease;
+}
+
+.photo-card:hover img {
+    transform: scale(1.04);
+}
+
+.photo-card.landscape img {
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+}
+
+.photo-card.portrait img {
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+}
+
+.photo-caption {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    color: var(--muted);
+    background: #fff;
+}
+
+@media (max-width: 768px) {
+    .photo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-card.landscape img,
+    .photo-card.portrait img {
+        aspect-ratio: auto;
+        object-fit: contain;
+    }
+}
+        .side-stack {
+            display: grid;
+            gap: 24px;
+        }
+
+        .mini-card {
+            background: rgba(255,255,255,0.96);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 22px;
+        }
+
+        .mini-card h3 {
+            margin: 0 0 14px;
+            font-size: 1.2rem;
+            color: var(--heading);
+        }
+
+        .route-list li,
+        .plain-list li,
+        .amenities-list li {
+            margin-bottom: 8px;
+        }
+
+        .map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            margin-top: 18px;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 18px;
+            box-shadow: 0 10px 24px rgba(36, 52, 71, 0.12);
+        }
+
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .availability-wrap {
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .gallery-brand-inline {
+            margin: 0 0 14px;
+            text-align: center;
+        }
+
+        .gallery-brand-inline img {
+            max-width: 180px;
+            width: 100%;
+            height: auto;
+            display: inline-block;
+        }
+
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(17, 24, 39, 0.88);
+            padding: 30px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-inner {
+            position: relative;
+            max-width: 96vw;
+            max-height: 92vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox img {
+            max-width: 96vw;
+            max-height: 88vh;
+            width: auto;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
+            background: #fff;
+        }
+
+        .lightbox-close,
+        .lightbox-prev,
+        .lightbox-next {
+            position: fixed;
+            z-index: 2;
+            border: 0;
+            cursor: pointer;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.32);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            font-size: 28px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-close:hover,
+        .lightbox-prev:hover,
+        .lightbox-next:hover {
+            background: rgba(0, 0, 0, 0.52);
+        }
+
+        .lightbox-close {
+            top: 16px;
+            right: 18px;
+            font-size: 34px;
+        }
+
+        .lightbox-prev {
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .lightbox-next {
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .lightbox-caption {
+            position: fixed;
+            left: 20px;
+            right: 20px;
+            bottom: 18px;
+            text-align: center;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 980px) {
+            .hero-grid,
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-copy h1 {
+                font-size: 2.4rem;
+            }
+
+            .amenities-list {
+                columns: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-wrap {
+                margin-top: 24px;
+                padding: 0 14px;
+            }
+
+            .hero,
+            .section-card,
+            .mini-card {
+                padding: 20px;
+                border-radius: 18px;
+            }
+
+            .hero-copy h1 {
+                font-size: 2rem;
+            }
+
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-card.wide {
+                grid-column: span 1;
+            }
+
+            .photo-card img,
+            .photo-card.tall img,
+            .photo-card.wide img {
+                height: auto;
+            }
+
+            .lightbox-prev,
+            .lightbox-next {
+                width: 46px;
+                height: 46px;
+                font-size: 24px;
+            }
+        }
+        .info-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--soft-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.info-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(36, 52, 71, 0.08);
+    border-color: #dccbb8;
+}
+
+.info-icon {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid var(--border);
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.info-body {
+    min-width: 0;
+    flex: 1;
+}
+
+.info-label {
+    display: block;
+    margin: 0 0 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+}
+
+.info-title,
+.info-title a {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 600;
+    color: var(--heading);
+    text-decoration: none;
+}
+
+.info-title a:hover {
+    color: var(--accent-dark);
+}
+
+.info-subtext {
+    margin-top: 4px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--muted);
+}
+
+.info-subtext a {
+    color: var(--accent-dark);
+    text-decoration: none;
+}
+
+.info-subtext a:hover {
+    text-decoration: underline;
+}
+
+.doc-link {
+    display: block;
+    text-decoration: none;
+}
+
+.doc-link:hover .info-title {
+    color: var(--accent-dark);
+}
+
+.doc-link:hover .info-subtext {
+    color: var(--text);
+}
+    </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+    <section class="hero">
+        <div class="hero-grid">
+            <div class="hero-copy">
+                <h1>Welcome to Appartamento Nemo</h1>
+                <p>
+                    A bright holiday apartment in Scalea with a fully equipped kitchen, two balconies,
+                    air conditioning, Wi-Fi, and easy access to the train station and nearby beaches.
+                </p>
+
+                <div class="hero-badges">
+                    <span class="hero-badge">🌿 Two balconies</span>
+                    <span class="hero-badge">❄️ Air conditioning</span>
+                    <span class="hero-badge">📶 Wi-Fi</span>
+                    <span class="hero-badge">🍽️ Dishwasher</span>
+                    <span class="hero-badge">🏖️ Beaches nearby</span>
+                </div>
+
+                <div class="hero-actions">
+                    <form method="POST" action="/property_calendar.php" target="_blank" style="margin:0;">
+                        <input type="hidden" name="property_id" value="1">
+                        <button type="submit" class="hero-button">📅 View Availability</button>
+                    </form>
+                    <a class="hero-link" href="https://wa.me/420608193335" target="_blank" rel="noopener">📲 Contact on WhatsApp</a>
+                    <a class="hero-link" href="https://myscalea.it/map/" target="_blank" rel="noopener">🗺️ Open Map</a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <img src="nemo1.png" alt="Appartamento Nemo">
+            </div>
+        </div>
+    </section>
+
+    <div class="content-grid">
+        <div class="main-column">
+
+            <section class="section-card">
+                <h2>Apartment Overview</h2>
+                <div class="detail-list">
+                    <div class="detail-item"><strong>Apartment:</strong> Unit 11A in the condominium Stella Marina</div>
+                    <div class="detail-item"><strong><span class="notranslate" translate="no">CIN</span>:</strong><a href="Nemo-CIN.pdf" target="_blank" rel="noopener"><span class="notranslate" translate="no">IT078138C2O3JWNOGI</span></a></div>
+                    <div class="detail-item"><strong>Address:</strong> Via Pietro Manchini 20, Scalea — <a href="https://www.google.com/maps/dir/?api=1&destination=Via+Pietro+Manchini+20+Scalea" target="_blank" rel="noopener">Navigate to Stella Marina</a></div>
+                    <div class="detail-item"><strong>Wi-Fi:</strong> <em>TelseyW52-2.4G-69B4</em> / Password: <em>NB8FQNKK</em></div>
+                    <div class="detail-item"><strong>Parking:</strong> One shared parking place inside the condominium or free street parking in front of the building.</div>
+                    <div class="detail-item"><strong>Linens & Towels:</strong> Fresh sets are available in the closet.</div>
+                </div>
+            </section>
+
+            <section class="section-card">
+                <h2>Amenities & Appliances</h2>
+                <p>The apartment is equipped with:</p>
+                <ul class="amenities-list">
+                    <li>Air conditioning</li>
+                    <li>Refrigerator</li>
+                    <li>Dishwasher</li>
+                    <li>Washing machine</li>
+                    <li>Cooktop</li>
+                    <li>Microwave oven</li>
+                    <li>Internet TV</li>
+                    <li>Hair dryer</li>
+                    <li>Clothes iron</li>
+                    <li>Oscillating fan</li>
+                    <li>Small inflatable boat with oars</li>
+                    <li>Two balconies</li>
+                    <li>Parking</li>
+                </ul>
+            </section>
+
+            <section class="section-card">
+                <h2>Apartment Photos</h2>
+                
+                <p>
+                    Take a look inside Appartamento Nemo, including the living area, fully equipped kitchen,
+                    renovated bathroom, one double bedroom, a small bedroom with bunk beds, and two balconies.
+                    Click any photo to open the full gallery.
+                </p>
+
+  <div class="photo-grid">
+
+    <!-- landscape row 1 -->
+    <figure class="photo-card landscape" data-index="0">
+        <img src="nemo/IMG_0673.jpeg" alt="Living area and kitchen">
+        <figcaption class="photo-caption">Living area and kitchen</figcaption>
+    </figure>
+
+    <figure class="photo-card landscape" data-index="7">
+        <img src="nemo/IMG_0674.jpeg" alt="Kitchen with dishwasher and microwave">
+        <figcaption class="photo-caption">Kitchen with dishwasher and microwave</figcaption>
+    </figure>
+
+    <!-- landscape row 2 -->
+    <figure class="photo-card landscape" data-index="5">
+        <img src="nemo/IMG_0667.jpeg" alt="Main balcony">
+        <figcaption class="photo-caption">Main balcony</figcaption>
+    </figure>
+
+    <figure class="photo-card landscape" data-index="6">
+        <img src="nemo/IMG_0672.jpeg" alt="Second balcony">
+        <figcaption class="photo-caption">Second balcony</figcaption>
+    </figure>
+
+    <!-- portrait row 1 -->
+    <figure class="photo-card portrait" data-index="1">
+        <img src="nemo/IMG_0661.jpeg" alt="Double bedroom">
+        <figcaption class="photo-caption">Double bedroom</figcaption>
+    </figure>
+
+    <figure class="photo-card portrait" data-index="2">
+        <img src="nemo/IMG_0663.jpeg" alt="Bathroom">
+        <figcaption class="photo-caption">Bathroom</figcaption>
+    </figure>
+
+    <!-- portrait row 2 -->
+    <figure class="photo-card portrait" data-index="3">
+        <img src="nemo/IMG_0670.jpeg" alt="Small bedroom with bunk beds">
+        <figcaption class="photo-caption">Small bedroom with bunk beds</figcaption>
+    </figure>
+
+    <figure class="photo-card portrait" data-index="4">
+        <img src="nemo/IMG_0671.jpeg" alt="Bunk bed room">
+        <figcaption class="photo-caption">Bunk bed room</figcaption>
+    </figure>
+
+</div>
+            </section>
+
+            <section class="section-card">
+                <h2>Discover Scalea on Video</h2>
+                <p>Watch a short playlist with videos from Scalea, its beaches, and the surrounding area.</p>
+                <div class="video-wrap">
+                    <iframe
+                        src="https://www.youtube.com/embed/videoseries?list=PL2Nr2YaUS6x3_K7mYp2zDCh8s80hPUsG7"
+                        title="Scalea video playlist"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </section>
+
+        </div>
+
+        <aside class="side-column">
+            <div class="side-stack">
+
+                <section class="mini-card">
+                    <h3>Check-In & Check-Out</h3>
+                    <ul class="plain-list">
+                        <li><strong>Check-In:</strong> from 15:00</li>
+                        <li><strong>Check-Out:</strong> by 10:00</li>
+                        <li>If you need flexibility, please send us a WhatsApp message.</li>
+                    </ul>
+                </section>
+
+   <section class="mini-card">
+    <h3>Electrical Capacity</h3>
+    <p>Please note that the apartment has limited electrical capacity.</p>
+
+    <div class="note">
+    If a temporary power cut occurs, please use fewer high-power appliances at the same time.
+    A simple rule is to switch on one less high-power appliance than were being used when the outage happened.
+    The water heater and air conditioning are controlled by switches in the bathroom, located below the water heater.
+    Please do not use electric kettles, as they can easily cause the instant power load to be exceeded.
+</div>
+
+    <div class="info-item" style="margin-top:14px;">
+        <div class="info-icon">📄</div>
+        <div class="info-body">
+            <a class="doc-link" href="Nemo-DICO.pdf" target="_blank" rel="noopener">
+                <span class="info-label">Technical document</span>
+                <div class="info-title">
+                    <span class="notranslate" translate="no">DICHIARAZIONE DI CONFORMITÀ (DICO)</span>
+                </div>
+                <div class="info-subtext">Electrical conformity declaration (PDF)</div>
+            </a>
+        </div>
+    </div>
+</section>
+
+                <section class="mini-card">
+                    <h3>House Rules</h3>
+                    <ul class="plain-list">
+                        <li><strong>No smoking</strong> inside.</li>
+                        <li>Smoking is permitted only on the large balcony accessible from the small bedroom.</li>
+                        <li><strong>Quiet hours:</strong> 22:00 – 07:00.</li>
+                        <li><strong>No pets</strong> allowed.</li>
+                        <li>Please wash used dishes and take out the trash before leaving.</li>
+                        <li><strong>Waste bins:</strong> Three separate bins are provided for sorting.</li>
+                    </ul>
+                </section>
+
+                <section class="mini-card">
+                    <h3>Safety & Emergencies</h3>
+                    <ul class="plain-list">
+                        <li><strong>Fire extinguisher:</strong> Mounted at the apartment entrance.</li>
+                        <li><strong>First-aid kit:</strong> In the closet by the entrance.</li>
+                        <li><strong>112</strong> – All emergency services</li>
+                        <li><strong>113</strong> – Police</li>
+                        <li><strong>115</strong> – Fire Brigade</li>
+                        <li><strong>118</strong> – Medical Ambulance</li>
+                    </ul>
+                </section>
+
+            <section class="mini-card">
+    <h3>Local Recommendations</h3>
+    <p>
+        Explore our interactive MyScalea map with restaurants, shops, pharmacies, beaches,
+        and other useful points of interest in Scalea and the surrounding area.
+    </p>
+    <p>
+        If you notice an incorrect or no longer existing place, or if you discover a useful new one,
+        please let us know so we can keep the map updated.
+    </p>
+    <a class="map-link" href="https://myscalea.it/map/" target="_blank" rel="noopener">
+        🗺️ Open the MyScalea map
+    </a>
+</section>
+
+<section class="mini-card">
+    <h3>Basic Navigation</h3>
+    <p>
+        The interactive route map shows the train station and the main walking routes to nearby beaches.
+    </p>
+    <a class="map-link" href="https://earth.google.com/web/data=MkEKPwo9CiExWjNWcVpsa3ExeVJiN3NjeFZrTUItdWg2cHlRSGdxeU8SFgoUMEI1NDJDOUEzMzM4MzUzNkVEMDQgAUICCABKCAjjuJulBxAB" target="_blank" rel="noopener">
+        🗺️ Open the interactive route map
+    </a>
+    <ul class="route-list">
+        <li><strong>Yellow route:</strong> train station — approximately <strong>365 m</strong></li>
+        <li><strong>Red route:</strong> Lido il Corallo via Interspar — just under <strong>1,200 m</strong></li>
+        <li><strong>Purple route:</strong> Lido il Tramonto — just under <strong>1 km</strong></li>
+    </ul>
+    <p style="margin-top:14px;">
+        On the red route to Lido il Corallo, you can stop at Interspar to buy drinks, snacks,
+        and other beach essentials. Depending on the season, there may also be small stalls
+        along the way selling beach items and inflatables.
+    </p>
+</section>
+               <section class="mini-card">
+    <h3>Contact</h3>
+
+    <ul class="info-list">
+        <li class="info-item">
+            <div class="info-icon">📲</div>
+            <div class="info-body">
+                <span class="info-label">WhatsApp</span>
+                <div class="info-title">
+                    <a href="https://wa.me/420608193335" target="_blank" rel="noopener">
+                        Antonín Ečer
+                    </a>
+                </div>
+                <div class="info-subtext">Owner of the apartment</div>
+            </div>
+        </li>
+
+        <li class="info-item">
+            <div class="info-icon">✉️</div>
+            <div class="info-body">
+                <span class="info-label">Email</span>
+                <div class="info-title">
+                    <a href="mailto:antoninecer@gmail.com">antoninecer@gmail.com</a>
+                </div>
+                <div class="info-subtext">For questions before or during your stay</div>
+            </div>
+        </li>
+    </ul>
+</section>
+
+<section class="mini-card">
+    <h3>Documents</h3>
+
+    <ul class="info-list">
+        <li class="info-item">
+            <div class="info-icon">📄</div>
+            <div class="info-body">
+                <a class="doc-link" href="Nemo-CIN.pdf" target="_blank" rel="noopener">
+                    <span class="info-label">Official document</span>
+                    <div class="info-title">
+                        <span class="notranslate" translate="no">
+                            Certificato di Rilascio del Codice Identificativo Nazionale (CIN)
+                        </span>
+                    </div>
+                    <div class="info-subtext">Open PDF document</div>
+                </a>
+            </div>
+        </li>
+
+        <li class="info-item">
+            <div class="info-icon">📄</div>
+            <div class="info-body">
+                <a class="doc-link" href="Nemo-DICO.pdf" target="_blank" rel="noopener">
+                    <span class="info-label">Official document</span>
+                    <div class="info-title">
+                        <span class="notranslate" translate="no">
+                            DICHIARAZIONE DI CONFORMITÀ (DICO)
+                        </span>
+                    </div>
+                    <div class="info-subtext">Open PDF document</div>
+                </a>
+            </div>
+        </li>
+    </ul>
+</section>
+
+            </div>
+        </aside>
+    </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close gallery">&times;</button>
+    <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous photo">&#10094;</button>
+    <div class="lightbox-inner">
+        <img id="lightboxImg" src="" alt="">
+    </div>
+    <button class="lightbox-next" id="lightboxNext" aria-label="Next photo">&#10095;</button>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<?php include __DIR__ . '/../footer.php'; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const cards = Array.from(document.querySelectorAll('.photo-card'));
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const lightboxClose = document.getElementById('lightboxClose');
+    const lightboxPrev = document.getElementById('lightboxPrev');
+    const lightboxNext = document.getElementById('lightboxNext');
+
+    const gallery = cards.map(card => {
+        const img = card.querySelector('img');
+        return {
+            src: img.getAttribute('src'),
+            alt: img.getAttribute('alt') || ''
+        };
+    });
+
+    let currentIndex = 0;
+
+    function renderImage(index) {
+        currentIndex = index;
+        lightboxImg.src = gallery[index].src;
+        lightboxImg.alt = gallery[index].alt;
+        lightboxCaption.textContent = gallery[index].alt;
+    }
+
+    function openLightbox(index) {
+        renderImage(index);
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+        lightboxImg.src = '';
+        lightboxImg.alt = '';
+        document.body.style.overflow = '';
+    }
+
+    function showNext() {
+        const nextIndex = (currentIndex + 1) % gallery.length;
+        renderImage(nextIndex);
+    }
+
+    function showPrev() {
+        const prevIndex = (currentIndex - 1 + gallery.length) % gallery.length;
+        renderImage(prevIndex);
+    }
+
+    cards.forEach((card, index) => {
+        card.addEventListener('click', function () {
+            openLightbox(index);
+        });
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxNext.addEventListener('click', showNext);
+    lightboxPrev.addEventListener('click', showPrev);
+
+    lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (!lightbox.classList.contains('active')) {
+            return;
+        }
+
+        if (e.key === 'Escape') {
+            closeLightbox();
+        } else if (e.key === 'ArrowRight') {
+            showNext();
+        } else if (e.key === 'ArrowLeft') {
+            showPrev();
+        }
+    });
+});
+</script>
+</body>
+</html>

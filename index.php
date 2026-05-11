@@ -48,10 +48,11 @@
     </iframe>
   </div>
 </section>
+
 <section class="section" style="text-align:center;">
   <div style="position:relative; padding-bottom:56.25%; overflow:hidden; max-width:100%; height:auto;">
     <iframe
-      src="https://www.youtube.com/embed/IJT8g2NLRZQ?controls=1&rel=0&enablejsapi=1&&cc_load_policy=1"
+      src="https://www.youtube.com/embed/YEkXTZd4ymw?rel=0&autoplay=0&modestbranding=1"
       frameborder="0"
       allow="autoplay; encrypted-media"
       allowfullscreen
@@ -59,34 +60,6 @@
     </iframe>
   </div>
 </section>
-
-
-<section class="section">
-  <h2>📰 News from real estate agencies</h2>
-  <?php include 'blog_agents.php'; ?>
-</section>
-
-<section class="section">
-  <h2>📰 News</h2>
-  <?php $_POST['user_id'] = 1; include 'blog_view.php'; ?>
-</section>
-
-<section class="section">
-  <h2>Actions</h2>
-  <div>
-    <p><?php $_GET['limit'] = 10; $_GET['category'] = '2'; include 'events_timeline.php'; ?></p>
-  </div>
-</section>
-
-<section class="section">
-  <h2>🖼️ Photogalery</h2>
-  <div>
-    <p>We are working on it…<br>
-      We will use Piwigo galery here, in construction...
-    </p>
-  </div>
-</section>
-
 <section class="section">
   <h2>🔗 Usefull links</h2>
   <ul>

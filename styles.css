@@ -215,3 +215,52 @@ ul li {
 }
 
 .mare-flag { display:inline-flex; align-items:center; }
+
+:root {
+    --bg: #f7f4ef;
+    --card: #ffffff;
+    --soft: #f3ede5;
+    --soft-2: #faf7f2;
+    --text: #334155;
+    --muted: #6b7280;
+    --heading: #243447;
+    --accent: #c98f65;
+    --accent-dark: #a86e43;
+    --border: #e9dfd2;
+    --shadow: 0 10px 30px rgba(36, 52, 71, 0.08);
+    --radius: 20px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, #fffaf4 0%, transparent 35%),
+        radial-gradient(circle at top right, #f9efe5 0%, transparent 30%),
+        linear-gradient(180deg, #fbf8f3 0%, #f6f1ea 100%);
+}
+
+a {
+    color: var(--accent-dark);
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+.notranslate {
+    unicode-bidi: isolate;
+}
