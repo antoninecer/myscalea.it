@@ -44,3 +44,14 @@ error_log
 *.sql.gz
 *.bak
 *.backup
+
+# Video / media files
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.m4v
+
+# Local howto videos / temporary learning materials
+howto/*.mp4
