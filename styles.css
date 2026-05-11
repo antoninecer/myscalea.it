@@ -613,3 +613,176 @@ header nav {
 }
 
 
+
+
+/* PATCH 012: closing previously unclosed CSS block(s) */
+}
+
+
+/* PATCH 012: top navigation no-overlap */
+:root {
+  --myscalea-nav-space: 88px;
+}
+
+/*
+  The menu used to be fixed over the page.
+  Sticky keeps it visible but still reserves vertical space,
+  so page titles/forms are not hidden behind it.
+*/
+.top-nav {
+  position: sticky !important;
+  top: 12px !important;
+  left: auto !important;
+  right: auto !important;
+  z-index: 3000 !important;
+  margin: 12px 0 0 !important;
+  padding: 0 !important;
+  pointer-events: none;
+}
+
+/* Keep glass effect, but let content start below the nav. */
+.top-nav-inner {
+  pointer-events: auto;
+}
+
+/* No fake top padding needed when nav is in document flow. */
+header.main-header,
+body > header {
+  padding-top: 64px !important;
+}
+
+/* Generic first content sections should never slide under the nav. */
+body > .section:first-of-type,
+body > main:first-of-type,
+.property-detail:first-of-type {
+  margin-top: 18px !important;
+}
+
+/* Calendar page: keep enough breathing room under navigation. */
+.section h1:first-child {
+  scroll-margin-top: 110px;
+}
+
+/* Mobile: nav remains compact and menu opens below the bar, not over page title. */
+@media (max-width: 980px) {
+  :root {
+    --myscalea-nav-space: 78px;
+  }
+
+  .top-nav {
+    top: 8px !important;
+    margin-top: 8px !important;
+  }
+
+  .top-nav-menu {
+    top: calc(100% + 8px) !important;
+    max-height: min(70vh, 520px) !important;
+  }
+
+  header.main-header,
+  body > header {
+    padding-top: 48px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .top-nav-inner {
+    width: calc(100% - 16px) !important;
+    min-height: 56px !important;
+    border-radius: 20px !important;
+  }
+
+  .top-nav-brand small {
+    display: none !important;
+  }
+
+  .top-nav-toggle {
+    min-height: 44px !important;
+  }
+
+  header.main-header,
+  body > header {
+    padding-top: 40px !important;
+  }
+}
+
+/* For full-screen map page, keep nav in flow but compact. */
+body.map-page .top-nav,
+.map-page .top-nav {
+  margin-top: 8px !important;
+}
+
+/* ===== PATCH 013 NAV IN DOCUMENT FLOW START =====
+   Make the main navigation a normal part of the page.
+   It no longer floats over content and the page no longer scrolls behind it.
+*/
+.top-nav {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  z-index: 50 !important;
+  pointer-events: auto !important;
+  width: 100% !important;
+  padding: 10px 0 8px !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+.top-nav-inner {
+  position: relative !important;
+  width: min(1180px, calc(100% - 28px)) !important;
+  margin: 0 auto !important;
+  pointer-events: auto !important;
+}
+
+/* The old fixed nav required artificial top padding on all headers.
+   With a normal-flow nav this padding creates ugly gaps, so reset it. */
+header.main-header,
+body > header {
+  padding-top: 60px !important;
+}
+
+/* Pages without a hero/header should start naturally below the nav. */
+body {
+  padding-top: 0 !important;
+}
+
+/* Anchor targets should not disappear under nav on browsers that keep sticky/focus behavior. */
+html {
+  scroll-padding-top: 12px !important;
+}
+
+/* On mobile the opened menu stays in page flow, not as a covering overlay. */
+@media (max-width: 980px) {
+  .top-nav {
+    padding: 8px 0 !important;
+  }
+
+  .top-nav-menu {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin-top: 10px !important;
+  }
+
+  .top-nav-menu.is-open {
+    display: block !important;
+  }
+
+  header.main-header,
+  body > header {
+    padding-top: 48px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  header.main-header,
+  body > header {
+    padding-top: 40px !important;
+  }
+}
+/* ===== PATCH 013 NAV IN DOCUMENT FLOW END ===== */
